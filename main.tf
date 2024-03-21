@@ -20,7 +20,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 # Create public IPs
-resource "azurerm_public_ip" "my_terraform_public_ip" {
+resource "azurerm_public_ip" "public_ip" {
   name                = "${random_pet.prefix.id}-public-ip"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -28,7 +28,7 @@ resource "azurerm_public_ip" "my_terraform_public_ip" {
 }
 
 # Create Network Security Group and rules
-resource "azurerm_network_security_group" "my_terraform_nsg" {
+resource "azurerm_network_security_group" "nsg" {
   name                = "${random_pet.prefix.id}-nsg"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -68,14 +68,14 @@ resource "azurerm_network_interface" "vnic" {
     name                          = "my_nic_configuration"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.my_terraform_public_ip.id
+    public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
 }
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
   network_interface_id      = azurerm_network_interface.vnic.id
-  network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 

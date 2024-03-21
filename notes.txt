@@ -1,0 +1,32 @@
+CSW Lab Env
+tet-pov-rtp1.cpoc.co
+
+Check local user via PS -  run PS as admin
+net user
+
+Ensure Connectivity to CSW Cluster
+Test-Connection tet-pov-rtp1.cpoc.co
+
+More Details & Successor - BETTER
+Test-NetConnection tet-pov-rtp1.cpoc.co -InformationLevel "Detailed"
+
+Test Case 1a - Proxy 443 outbound - SAAS
+Test-NetConnection tet-pov-rtp1.cpoc.co -Port 443
+
+Test-NetConnection google.com - Port 443
+
+Check the current Execution Policy
+Get-ExecutionPolicy -List
+
+Execution Policy - PreCheck PREP
+powershell -ExecutionPolicy Bypass -File "tetration_installer_rooez_enforcer_windows_tet-pov-rtp1.ps1" -preCheck
+
+Execution Policy - Deploy
+powershell -ExecutionPolicy Bypass -File "tetration_installer_rooez_enforcer_windows_tet-pov-rtp1.ps1" -new
+
+Create a log upon installation
+powershell -ExecutionPolicy Bypass -File "tetration_installer_rooez_enforcer_windows_tet-pov-rtp1.ps1.ps1" -new -logFile install.log
+
+Check the service
+sc query TetSensor
+sc query TetEnforcer
