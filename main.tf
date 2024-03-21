@@ -35,14 +35,26 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
 
 # This is why microsegmention is needed and must be frictionless for devs
   security_rule {
-    name                       = "this_is_lazy"
-    priority                    = 100
-    direction                   = "Inbound"
+    name                       = "RDP"
+    priority                   = 1000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "3389"
     source_address_prefix      = "*"
-    destination_address_prefix   = "*"
-    destination_port_range       = "*"
-    access                      = "Allow"
-    protocol                     = "*"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "web"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
   }
 }
 
