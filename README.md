@@ -20,7 +20,7 @@ My quick TF code to:
 
 ✅ Generate a random value for a unique storage account name using random_id.
 
-✅ Create a storage account for boot diagnostics using azurerm_storage_account.
+🟥 Create a storage account for boot diagnostics using azurerm_storage_account. 
 
 ✅ Create a Windows VM with an IIS web server using azurerm_windows_virtual_machine. 
 

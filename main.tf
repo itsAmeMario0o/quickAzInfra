@@ -78,15 +78,6 @@ resource "azurerm_network_interface_security_group_association" "example" {
   network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
 }
 
-# Create storage account for boot diagnostics
-resource "azurerm_storage_account" "my_storage_account" {
-  name                     = "diag${random_id.random_id.hex}"
-  location                 = azurerm_resource_group.rg.location
-  resource_group_name      = azurerm_resource_group.rg.name
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}
-
 
 # Create virtual machine
 resource "azurerm_windows_virtual_machine" "main" {
@@ -111,10 +102,6 @@ resource "azurerm_windows_virtual_machine" "main" {
     version   = "latest"
   }
 
-
-  boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
-  }
 }
 
 # Install IIS web server to the virtual machine
@@ -134,6 +121,7 @@ resource "azurerm_windows_virtual_machine" "main" {
 #}
 
 # Generate random text for a unique storage account name
+# This is not implemented yet...
 resource "random_id" "random_id" {
   keepers = {
     # Generate a new ID only when a new resource group is defined
