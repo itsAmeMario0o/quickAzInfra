@@ -47,7 +47,7 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
 }
 
 # Create network interface
-resource "azurerm_network_interface" "my_terraform_nic" {
+resource "azurerm_network_interface" "vnic" {
   name                = "${random_pet.prefix.id}-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -62,7 +62,7 @@ resource "azurerm_network_interface" "my_terraform_nic" {
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.my_terraform_nic.id
+  network_interface_id      = azurerm_network_interface.vnic.id
   network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
 }
 
@@ -79,12 +79,12 @@ resource "azurerm_storage_account" "my_storage_account" {
 # Create virtual machine
 resource "azurerm_windows_virtual_machine" "main" {
   name                  = "${var.prefix}-vm"
-  admin_username        = "azureuser"
+  admin_username        = "mariorui"
   admin_password        = random_password.password.result
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.my_terraform_nic.id]
-  size                  = "Standard_DS1_v2"
+  network_interface_ids = [azurerm_network_interface.vnic.id]
+  size                  = "Standard_B2s"
 
   os_disk {
     name                 = "myOsDisk"
@@ -106,20 +106,20 @@ resource "azurerm_windows_virtual_machine" "main" {
 }
 
 # Install IIS web server to the virtual machine
-resource "azurerm_virtual_machine_extension" "web_server_install" {
-  name                       = "${random_pet.prefix.id}-wsi"
-  virtual_machine_id         = azurerm_windows_virtual_machine.main.id
-  publisher                  = "Microsoft.Compute"
-  type                       = "CustomScriptExtension"
-  type_handler_version       = "1.8"
-  auto_upgrade_minor_version = true
+# resource "azurerm_virtual_machine_extension" "web_server_install" {
+#  name                       = "${random_pet.prefix.id}-wsi"
+#  virtual_machine_id         = azurerm_windows_virtual_machine.main.id
+#  publisher                  = "Microsoft.Compute"
+#  type                       = "CustomScriptExtension"
+#  type_handler_version       = "1.8"
+#  auto_upgrade_minor_version = true
 
-  settings = <<SETTINGS
-    {
-      "commandToExecute": "powershell -ExecutionPolicy Unrestricted Install-WindowsFeature -Name Web-Server -IncludeAllSubFeature -IncludeManagementTools"
-    }
-  SETTINGS
-}
+#  settings = <<SETTINGS
+#    {
+#      "commandToExecute": "powershell -ExecutionPolicy Unrestricted Install-WindowsFeature -Name Web-Server -IncludeAllSubFeature -IncludeManagementTools"
+#    }
+#  SETTINGS
+#}
 
 # Generate random text for a unique storage account name
 resource "random_id" "random_id" {
