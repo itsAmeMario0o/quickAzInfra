@@ -90,7 +90,7 @@ resource "azurerm_windows_virtual_machine" "main" {
   name                  = "${var.prefix}-vm"
   admin_username        = "ciscoworkloadpro"
 # admin_password        = random_password.password.result
-  admin_password        = "learnciscoworkloadprotection"
+  admin_password        = "LearnCisc0Workl0adPr0tection!"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.vnic[each.key].id]
