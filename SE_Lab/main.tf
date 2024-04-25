@@ -70,7 +70,7 @@ resource "azurerm_network_interface" "vnic" {
 
   ip_configuration {
     name                          = "my_nic_configuration-${each.key}"
-    subnet_id                     = azurerm_subnet.subnet[0].id
+    subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.public_ip[each.key].id
   }
@@ -89,7 +89,8 @@ resource "azurerm_windows_virtual_machine" "main" {
 
   name                  = "${var.prefix}-vm"
   admin_username        = "ciscoworkloadpro"
-  admin_password        = random_password.password.result
+# admin_password        = random_password.password.result
+  admin_password        = "learnciscoworkloadprotection"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.vnic[each.key].id]
