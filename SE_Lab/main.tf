@@ -78,7 +78,9 @@ resource "azurerm_network_interface" "vnic" {
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.vnic.id
+  for_each = { for i in range(6) : i => {} }
+
+  network_interface_id      = azurerm_network_interface.vnic[each.key].id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
