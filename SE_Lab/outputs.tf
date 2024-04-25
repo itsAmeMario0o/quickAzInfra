@@ -3,10 +3,10 @@ output "resource_group_name" {
 }
 
 output "public_ip_address" {
-  value = azurerm_windows_virtual_machine.main.public_ip_address
+  value = azurerm_windows_virtual_machine.main[each.key].public_ip_address
 }
 
 # SHAME SHAME SHAME - Dont do this, this is lazy - use a key vault
-output "admin_password" {
-  value     = nonsensitive(azurerm_windows_virtual_machine.main.admin_password.main[each.key])
-}
+#output "admin_password" {
+#  value     = nonsensitive(azurerm_windows_virtual_machine.main.admin_password)
+#}
