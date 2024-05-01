@@ -113,8 +113,6 @@ resource "azurerm_windows_virtual_machine" "main" {
 
 }
 
-# Generate random text for a unique storage account name
-
 # This is not implemented yet...
 resource "random_id" "random_id" {
   keepers = {
