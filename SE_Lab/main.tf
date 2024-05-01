@@ -31,7 +31,9 @@ resource "azurerm_public_ip" "public_ip" {
 
 # Create Network Security Group and rules
 resource "azurerm_network_security_group" "nsg" {
-  name                = "${random_pet.prefix.id}-nsg"
+  for_each = { for i in range(6) : i => {} }
+
+  name                = "${random_pet.prefix.id}-nsg-${each.key}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -64,7 +66,7 @@ resource "azurerm_network_security_group" "nsg" {
 resource "azurerm_network_interface" "vnic" {
   for_each = { for i in range(6) : i => {} }
 
-  name                = "${random_pet.prefix.id}-nic"
+  name                = "${random_pet.prefix.id}-nic-${each.key}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -81,17 +83,15 @@ resource "azurerm_network_interface_security_group_association" "example" {
   for_each = { for i in range(6) : i => {} }
 
   network_interface_id      = azurerm_network_interface.vnic[each.key].id
-  network_security_group_id = azurerm_network_security_group.nsg.id
+  network_security_group_id = azurerm_network_security_group.nsg[each.key].id
 }
-
 
 # Create virtual machine
 resource "azurerm_windows_virtual_machine" "main" {
   for_each = { for i in range(6) : i => {} }
 
-  name                  = "${var.prefix}-vm"
+  name                  = "${var.prefix}-vm-${each.key}"
   admin_username        = "ciscoworkloadpro"
-# admin_password        = random_password.password.result
   admin_password        = "LearnCisc0Workl0adPr0tection!"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
@@ -112,22 +112,6 @@ resource "azurerm_windows_virtual_machine" "main" {
   }
 
 }
-
-# Install IIS web server to the virtual machine
-# resource "azurerm_virtual_machine_extension" "web_server_install" {
-#  name                       = "${random_pet.prefix.id}-wsi"
-#  virtual_machine_id         = azurerm_windows_virtual_machine.main.id
-#  publisher                  = "Microsoft.Compute"
-#  type                       = "CustomScriptExtension"
-#  type_handler_version       = "1.8"
-#  auto_upgrade_minor_version = true
-
-#  settings = <<SETTINGS
-#    {
-#      "commandToExecute": "powershell -ExecutionPolicy Unrestricted Install-WindowsFeature -Name Web-Server -IncludeAllSubFeature -IncludeManagementTools"
-#    }
-#  SETTINGS
-#}
 
 # Generate random text for a unique storage account name
 
